@@ -51,7 +51,7 @@ export default function BrooklynDashboard() {
         <header className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-3">
             <Droplets className="text-blue-500 w-8 h-8" />
-            <h1 className="text-2xl font-bold tracking-tight">Brooklyn Water Quality</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Gowanus 2026 Water Quality</h1>
           </div>
           <select 
             value={range} 
@@ -127,3 +127,4 @@ export default function BrooklynDashboard() {
     </div>
   );
 }
+
