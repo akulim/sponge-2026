@@ -40,7 +40,7 @@ export default function BrooklynDashboard() {
   }, [seedString]);
 
   const score = Math.round(waterLevel * 100);
-  const s = score > 66 ? statusStyles.elevated : score > 33 ? statusStyles.monitor : statusStyles.stable;
+  /*const s = score > 66 ? statusStyles.elevated : score > 33 ? statusStyles.monitor : statusStyles.stable;*/
   const StatusIcon = s.icon;
 
   const [mode, setMode] = useState("after"); // Default to the healthy view
@@ -125,6 +125,7 @@ export default function BrooklynDashboard() {
     </div>
   );
 }
+
 
 
 
