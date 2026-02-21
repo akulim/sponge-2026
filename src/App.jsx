@@ -45,118 +45,95 @@ export default function BrooklynDashboard() {
 
   const [mode, setMode] = useState("after"); // Default to the healthy view
 
+  // If "before", we force high risk and low vegetation
+  const isBefore = mode === "before";
+  const displayScore = isBefore ? 92 : score; 
+  const displayWater = isBefore ? 0.98 : waterLevel;
+  const displayVeg = isBefore ? "NO DATA" : "84%";
+
   return (
-  <div className="min-h-screen bg-[#0a0a0a] text-zinc-100 p-6 font-mono">
+  const isBefore = mode === "before";
+  const displayScore = isBefore ? 92 : score; 
+  const displayWater = isBefore ? 0.98 : waterLevel;
+  const s = isBefore ? statusStyles.elevated : (score > 66 ? statusStyles.elevated : score > 33 ? statusStyles.monitor : statusStyles.stable);
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] text-zinc-100 p-6 font-mono">
       <div className="max-w-5xl mx-auto">
         
-        {/* HEADER */}
-        <header className="flex justify-between items-end mb-10 border-b border-zinc-800 pb-6">
-          <div>
-            <h1 className="text-3xl font-black tracking-tighter uppercase text-white">
-              Gowanus 2026 <span className="text-blue-500">Water Dashboard</span>
-            </h1>
-            <p className="text-zinc-500 text-xs mt-1">SENSORS ACTIVE // CANAL SECTOR 7</p>
-          </div>
-          <select 
-            value={range} 
-            onChange={(e) => setRange(e.target.value)}
-            className="bg-zinc-900 border border-zinc-800 rounded-md px-3 py-1 text-xs outline-none text-zinc-400"
+        {/* MODE TOGGLE BUTTONS */}
+        <div className="flex gap-1 bg-zinc-900 p-1 rounded-xl w-fit mb-8 border border-zinc-800">
+          <button 
+            onClick={() => setMode("before")}
+            className={`px-6 py-2 rounded-lg text-xs font-bold transition-all ${isBefore ? "bg-red-600 text-white" : "text-zinc-500 hover:text-zinc-300"}`}
           >
-            <option value="24h">L-24H</option>
-            <option value="7d">L-7D</option>
-          </select>
+            PRE-UPGRADE (2024)
+          </button>
+          <button 
+            onClick={() => setMode("after")}
+            className={`px-6 py-2 rounded-lg text-xs font-bold transition-all ${!isBefore ? "bg-blue-600 text-white" : "text-zinc-500 hover:text-zinc-300"}`}
+          >
+            GOWANUS 2026 ACTIVE
+          </button>
+        </div>
+
+        {/* HEADER */}
+        <header className="mb-10 border-b border-zinc-800 pb-6">
+          <h1 className="text-3xl font-black tracking-tighter uppercase">
+            System Status: <span className={isBefore ? "text-red-500" : "text-blue-500"}>
+              {isBefore ? "CRITICAL FAILURE" : "SENSORS ONLINE"}
+            </span>
+          </h1>
         </header>
 
-        {/* 1. TOP SECTION: LEAD RISK SCORE */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <CustomCard className="md:col-span-4 flex flex-col md:flex-row justify-between items-center bg-zinc-900/30 border-l-4 border-red-600">
-            <div>
-              <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest">Contamination Risk Index</p>
-              <h2 className="text-6xl font-black" style={{ color: s.color }}>{score}</h2>
-            </div>
-            <div className="text-right">
-              <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border mb-2 ${s.pill}`}>
-                <StatusIcon size={14} />
-                <span className="text-[10px] font-bold uppercase">{s.label}</span>
-              </div>
-              <p className="text-zinc-500 text-[10px] block">LAST UPDATED: {new Date().toLocaleTimeString()}</p>
-            </div>
-          </CustomCard>
-        </div>
+        {/* MAIN RISK CARD */}
+        <CustomCard className={`mb-6 border-l-4 ${isBefore ? "border-red-600 animate-pulse" : "border-blue-600"}`}>
+          <p className="text-zinc-500 text-[10px] uppercase font-bold">Contamination Risk</p>
+          <h2 className="text-6xl font-black" style={{ color: isBefore ? "#ef4444" : s.color }}>
+            {displayScore}
+          </h2>
+          {isBefore && <p className="text-red-500 text-[10px] mt-2 font-bold">⚠️ OVERFLOW DETECTED: UNTREATED SEWAGE DRIFT</p>}
+        </CustomCard>
 
-        {/* 2. MAIN FOCUS: THE STORMWATER TANK */}
+        {/* TANK FOCUS */}
         <div className="mb-10">
-          <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-3 ml-1">Stormwater Tank Capacity</p>
-          <CustomCard className="relative h-64 overflow-hidden bg-zinc-950 border-zinc-700 shadow-[inset_0_0_50px_rgba(0,0,0,0.5)]">
-            {/* Water Animation */}
+          <CustomCard className="h-64 relative overflow-hidden bg-zinc-950">
             <motion.div 
-              initial={{ height: 0 }}
-              animate={{ height: `${waterLevel * 100}%` }}
-              transition={{ type: "spring", stiffness: 20, damping: 10 }}
-              className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/80 to-blue-500/50 backdrop-blur-sm border-t-2 border-blue-400"
+              animate={{ height: `${displayWater * 100}%` }}
+              className={`absolute bottom-0 left-0 right-0 ${isBefore ? "bg-red-900/40 border-red-500" : "bg-blue-600/40 border-blue-400"} border-t-2`}
             />
-            
-            {/* Overlay Grid Lines (Industrial Look) */}
-            <div className="absolute inset-0 grid grid-rows-4 pointer-events-none">
-              {[75, 50, 25].map(tick => (
-                <div key={tick} className="border-t border-zinc-800/50 flex items-start">
-                  <span className="text-[9px] text-zinc-600 ml-2 mt-1">{tick}%</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Centered Readout */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-               <span className="text-8xl font-black text-white/20 tabular-nums">
-                 {Math.round(waterLevel * 100)}%
-               </span>
-               <span className="text-xs font-bold text-blue-300 tracking-widest uppercase">Volume Occupied</span>
+            <div className="absolute inset-0 flex items-center justify-center">
+               <span className="text-7xl font-black opacity-30">{Math.round(displayWater * 100)}%</span>
             </div>
           </CustomCard>
         </div>
 
-        {/* 3. BOTTOM SECTION: THE 3 SCORECARDS */}
+        {/* BOTTOM SCORECARDS */}
         <div className="grid md:grid-cols-3 gap-6">
-          {/* Card 1: pH */}
-          <CustomCard className="border-t-2 border-t-blue-500">
-            <div className="flex justify-between items-start mb-4">
-              <span className="text-[10px] font-bold text-zinc-500 uppercase">pH Balance</span>
-              <Droplets className="text-blue-500" size={18} />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-bold tracking-tighter">7.24</span>
-              <span className="text-[10px] text-emerald-400">NORMAL</span>
-            </div>
+          <CustomCard>
+            <span className="text-[10px] text-zinc-500 block mb-2 uppercase">pH Balance</span>
+            <span className="text-4xl font-bold">{isBefore ? "5.1" : "7.2"}</span>
+            {isBefore && <span className="text-[10px] text-red-500 block">ACIDIC</span>}
           </CustomCard>
 
-          {/* Card 2: Contamination/Vegetation */}
-          <CustomCard className="border-t-2 border-t-emerald-500">
-            <div className="flex justify-between items-start mb-4">
-              <span className="text-[10px] font-bold text-zinc-500 uppercase">Bioswale Health</span>
-              <Activity className="text-emerald-500" size={18} />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-bold tracking-tighter">84%</span>
-              <span className="text-[10px] text-zinc-500">OPTIMAL</span>
-            </div>
+          <CustomCard>
+            <span className="text-[10px] text-zinc-500 block mb-2 uppercase">Vegetation Health</span>
+            <span className={`text-4xl font-bold ${isBefore ? "text-zinc-700" : "text-white"}`}>
+              {isBefore ? "NO DATA" : "84%"}
+            </span>
+            {!isBefore && <span className="text-[10px] text-emerald-500 block">BIOSWALE ACTIVE</span>}
           </CustomCard>
 
-          {/* Card 3: Conductivity */}
-          <CustomCard className="border-t-2 border-t-amber-500">
-            <div className="flex justify-between items-start mb-4">
-              <span className="text-[10px] font-bold text-zinc-500 uppercase">Conductivity</span>
-              <ShieldAlert className="text-amber-500" size={18} />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-bold tracking-tighter">410</span>
-              <span className="text-[10px] text-amber-500">DRIFTING</span>
-            </div>
+          <CustomCard>
+            <span className="text-[10px] text-zinc-500 block mb-2 uppercase">Conductivity</span>
+            <span className="text-4xl font-bold">{isBefore ? "890" : "410"}</span>
           </CustomCard>
         </div>
       </div>
     </div>
   );
 }
+
 
 
 
