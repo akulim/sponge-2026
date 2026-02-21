@@ -5,34 +5,12 @@ import {
   ShieldAlert, TrendingDown, TrendingUp, TrendingUpDown 
 } from "lucide-react";
 
-// --- HELPERS (Instead of utils.js) ---
-const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
-const seededValue = (seed) => {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h);
-  const x = Math.sin(h) * 10000;
-  return x - Math.floor(x);
-};
-
-// --- STYLES ---
-const statusStyles = {
-  stable: { label: "Stable", icon: CheckCircle2, pill: "bg-emerald-900/40 text-emerald-300 border-emerald-700", color: "#10b981" },
-  monitor: { label: "Monitor", icon: AlertTriangle, pill: "bg-amber-900/40 text-amber-300 border-amber-700", color: "#f59e0b" },
-  elevated: { label: "Elevated Risk", icon: ShieldAlert, pill: "bg-rose-900/40 text-rose-300 border-rose-700", color: "#ef4444" },
-};
-
-// --- COMPONENTS (Inside same file for simplicity) ---
-const CustomCard = ({ children, className = "" }) => (
-  <div className={`rounded-2xl bg-[#121212] border border-zinc-800 p-5 shadow-xl ${className}`}>
-    {children}
-  </div>
-);
-
-export default function BrooklynDashboard() {
+// 1. Define Basic State
+  const [mode, setMode] = useState("after");
   const [range, setRange] = useState("7d");
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
 
-  // Simulated Data Logic
+  // 2. Calculate Water & Scores
   const seedString = `${selectedDate}-${range}`;
   const waterLevel = useMemo(() => {
     const val = seededValue(seedString);
@@ -40,14 +18,17 @@ export default function BrooklynDashboard() {
   }, [seedString]);
 
   const score = Math.round(waterLevel * 100);
-  /*const s = score > 66 ? statusStyles.elevated : score > 33 ? statusStyles.monitor : statusStyles.stable;*/
-  const StatusIcon = s.icon;
-
-  const [mode, setMode] = useState("after"); // Default to the healthy view
   const isBefore = mode === "before";
   const displayScore = isBefore ? 92 : score; 
   const displayWater = isBefore ? 0.98 : waterLevel;
-  const s = isBefore ? statusStyles.elevated : (score > 66 ? statusStyles.elevated : score > 33 ? statusStyles.monitor : statusStyles.stable);
+
+  // 3. Define 's' FIRST
+  const s = isBefore 
+    ? statusStyles.elevated 
+    : (score > 66 ? statusStyles.elevated : score > 33 ? statusStyles.monitor : statusStyles.stable);
+
+  // 4. NOW define StatusIcon using 's'
+  const StatusIcon = s.icon;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-zinc-100 p-6 font-mono">
@@ -125,6 +106,7 @@ export default function BrooklynDashboard() {
     </div>
   );
 }
+
 
 
 
