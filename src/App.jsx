@@ -44,87 +44,99 @@ export default function BrooklynDashboard() {
   const StatusIcon = s.icon;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-zinc-100 p-6 font-sans">
-      <div className="max-w-5xl mx-auto">
+   <div className="min-h-screen bg-[#0a0a0a] text-zinc-100 p-6 font-sans">
+      <div className="max-w-6xl mx-auto">
         
         {/* Header */}
-        <header className="flex justify-between items-center mb-8">
-          <div className="flex items-center gap-3">
-            <Droplets className="text-blue-500 w-8 h-8" />
-            <h1 className="text-2xl font-bold tracking-tight">Gowanus 2026 Water Quality</h1>
-          </div>
-          <select 
-            value={range} 
-            onChange={(e) => setRange(e.target.value)}
-            className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none"
-          >
-            <option value="24h">Last 24h</option>
-            <option value="7d">Last 7d</option>
-            <option value="30d">Last 30d</option>
-          </select>
+        <header className="mb-12 border-b border-zinc-800 pb-6">
+          <h1 className="text-4xl font-black tracking-tighter text-white uppercase">
+            Gowanus 2026 <span className="text-blue-500">Water Dashboard</span>
+          </h1>
+          <p className="text-zinc-500 mt-2 font-mono text-sm">Real-time Canal Filtration Monitoring // Brooklyn, NY</p>
         </header>
 
-        {/* Main Risk Card */}
-        <motion.div 
-          animate={{ backgroundColor: s.color + "15" }}
-          className="rounded-3xl border border-zinc-800 p-8 mb-8 transition-colors"
-        >
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <p className="text-zinc-500 text-sm uppercase tracking-widest font-semibold">Lead Risk Score</p>
-              <h2 className="text-6xl font-black" style={{ color: s.color }}>{score}</h2>
-            </div>
-            <div className={`flex items-center gap-2 px-4 py-2 rounded-full border ${s.pill}`}>
-              <StatusIcon size={18} />
-              <span className="text-sm font-bold uppercase">{s.label}</span>
-            </div>
-          </div>
-          {/* Progress Bar */}
-          <div className="w-full bg-zinc-800 h-4 rounded-full overflow-hidden">
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: `${score}%` }}
-              className="h-full"
-              style={{ backgroundColor: s.color }}
-            />
-          </div>
-        </motion.div>
-
-        {/* Grid Stats */}
-        <div className="grid md:grid-cols-3 gap-6">
-          <CustomCard>
-            <div className="flex justify-between items-center mb-4">
-              <div className="p-2 bg-blue-500/10 rounded-lg"><Activity className="text-blue-400" /></div>
-              <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded border border-emerald-500/20">IN RANGE</span>
-            </div>
-            <p className="text-zinc-500 text-xs">Conductivity</p>
-            <p className="text-2xl font-bold">240 <span className="text-sm font-normal text-zinc-500">µS/cm</span></p>
-          </CustomCard>
-
-          <CustomCard className={score > 60 ? "border-red-900/50" : ""}>
-            <div className="flex justify-between items-center mb-4">
-              <div className="p-2 bg-amber-500/10 rounded-lg"><AlertTriangle className="text-amber-400" /></div>
-              <span className="text-[10px] bg-red-500/10 text-red-400 px-2 py-1 rounded border border-red-500/20 uppercase font-bold">Drifting</span>
-            </div>
-            <p className="text-zinc-500 text-xs">Turbidity</p>
-            <p className="text-2xl font-bold">{(0.2 + (waterLevel * 0.8)).toFixed(2)} <span className="text-sm font-normal text-zinc-500">NTU</span></p>
-          </CustomCard>
-
-          <CustomCard>
-             <p className="text-zinc-500 text-xs mb-2 uppercase font-bold tracking-tighter">Stormwater Tank</p>
-             <div className="relative h-24 bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800">
-                <motion.div 
-                  animate={{ height: `${waterLevel * 100}%` }}
-                  className="absolute bottom-0 w-full bg-blue-600/40 backdrop-blur-sm border-t border-blue-400"
-                />
-                <div className="absolute inset-0 flex items-center justify-center text-xs font-mono">
-                  {Math.round(waterLevel * 100)}% CAPACITY
+        {/* MAIN FOCUS: CONTAMINATION RISK */}
+        <div className="mb-10">
+          <CustomCard className="bg-gradient-to-br from-[#121212] to-[#0a0a0a] border-l-4 border-l-red-600">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+              <div className="text-center md:text-left">
+                <p className="text-red-500 text-xs font-bold uppercase tracking-widest mb-1">Current Contamination Alert</p>
+                <h2 className="text-7xl font-black tracking-tighter">HIGH RISK</h2>
+                <p className="text-zinc-400 max-w-sm mt-2 text-sm italic">Heavy particulate drift detected near 3rd St. bridge. Vegetation filtration at 40% capacity.</p>
+              </div>
+              
+              {/* Massive Score Focus */}
+              <div className="relative flex items-center justify-center h-48 w-48 rounded-full border-8 border-red-900/30">
+                <div className="text-center">
+                  <span className="block text-5xl font-black text-red-500">{score}</span>
+                  <span className="text-[10px] text-zinc-500 uppercase font-bold">Risk Index</span>
                 </div>
-             </div>
+              </div>
+            </div>
           </CustomCard>
+        </div>
+
+        {/* THREE FOCUS SCORECARDS */}
+        <div className="grid md:grid-cols-3 gap-6">
+          
+          {/* Card 1: pH Balance */}
+          <CustomCard className="flex flex-col justify-between h-64 border-t-2 border-t-blue-500">
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <Droplets className="text-blue-400" size={28} />
+                <span className="text-[10px] font-bold text-blue-400 border border-blue-400/30 px-2 py-1 rounded">STABLE</span>
+              </div>
+              <h3 className="text-lg font-bold">pH Level</h3>
+              <p className="text-zinc-500 text-xs italic">Acidity monitoring</p>
+            </div>
+            <div className="mt-4">
+              <span className="text-4xl font-bold">7.2</span>
+              <div className="w-full bg-zinc-800 h-1.5 mt-2 rounded-full overflow-hidden">
+                <div className="bg-blue-500 h-full w-[72%]" />
+              </div>
+            </div>
+          </CustomCard>
+
+          {/* Card 2: Vegetation Condition */}
+          <CustomCard className="flex flex-col justify-between h-64 border-t-2 border-t-emerald-500">
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <Activity className="text-emerald-400" size={28} />
+                <span className="text-[10px] font-bold text-emerald-400 border border-emerald-400/30 px-2 py-1 rounded">OPTIMAL</span>
+              </div>
+              <h3 className="text-lg font-bold">Vegetation Health</h3>
+              <p className="text-zinc-500 text-xs italic">Bioswale filtration efficiency</p>
+            </div>
+            <div className="mt-4">
+              <span className="text-4xl font-bold">88%</span>
+              <div className="w-full bg-zinc-800 h-1.5 mt-2 rounded-full overflow-hidden">
+                <div className="bg-emerald-500 h-full w-[88%]" />
+              </div>
+            </div>
+          </CustomCard>
+
+          {/* Card 3: Conductivity */}
+          <CustomCard className="flex flex-col justify-between h-64 border-t-2 border-t-amber-500">
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <ShieldAlert className="text-amber-400" size={28} />
+                <span className="text-[10px] font-bold text-amber-400 border border-amber-400/30 px-2 py-1 rounded">DRIFTING</span>
+              </div>
+              <h3 className="text-lg font-bold">Conductivity</h3>
+              <p className="text-zinc-500 text-xs italic">Salinity and dissolved solids</p>
+            </div>
+            <div className="mt-4">
+              <span className="text-4xl font-bold">420 <span className="text-sm font-normal text-zinc-500">µS</span></span>
+              <div className="w-full bg-zinc-800 h-1.5 mt-2 rounded-full overflow-hidden">
+                <div className="bg-amber-500 h-full w-[65%]" />
+              </div>
+            </div>
+          </CustomCard>
+
         </div>
       </div>
     </div>
   );
 }
+
 
