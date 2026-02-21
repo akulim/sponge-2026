@@ -43,6 +43,8 @@ export default function BrooklynDashboard() {
   const s = score > 66 ? statusStyles.elevated : score > 33 ? statusStyles.monitor : statusStyles.stable;
   const StatusIcon = s.icon;
 
+  const [mode, setMode] = useState("after"); // Default to the healthy view
+
   return (
   <div className="min-h-screen bg-[#0a0a0a] text-zinc-100 p-6 font-mono">
       <div className="max-w-5xl mx-auto">
@@ -155,6 +157,7 @@ export default function BrooklynDashboard() {
     </div>
   );
 }
+
 
 
 
