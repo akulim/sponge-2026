@@ -44,13 +44,6 @@ export default function BrooklynDashboard() {
   const StatusIcon = s.icon;
 
   const [mode, setMode] = useState("after"); // Default to the healthy view
-
-  // If "before", we force high risk and low vegetation
-  const isBefore = mode === "before";
-  const displayScore = isBefore ? 92 : score; 
-  const displayWater = isBefore ? 0.98 : waterLevel;
-  const displayVeg = isBefore ? "NO DATA" : "84%";
-  
   const isBefore = mode === "before";
   const displayScore = isBefore ? 92 : score; 
   const displayWater = isBefore ? 0.98 : waterLevel;
@@ -132,6 +125,7 @@ export default function BrooklynDashboard() {
     </div>
   );
 }
+
 
 
 
