@@ -50,8 +50,7 @@ export default function BrooklynDashboard() {
   const displayScore = isBefore ? 92 : score; 
   const displayWater = isBefore ? 0.98 : waterLevel;
   const displayVeg = isBefore ? "NO DATA" : "84%";
-
-  return (
+  
   const isBefore = mode === "before";
   const displayScore = isBefore ? 92 : score; 
   const displayWater = isBefore ? 0.98 : waterLevel;
@@ -133,6 +132,7 @@ export default function BrooklynDashboard() {
     </div>
   );
 }
+
 
 
 
